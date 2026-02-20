@@ -1,0 +1,139 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import InstallCommand from '@/components/InstallCommand.astro';
+import Card from '@/components/Card.astro';
+import { themes } from '@/data/themes';
+
+const features = [
+  {
+    icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>',
+    title: '8 Terminal Themes',
+    description: 'Nord, Dracula, Catppuccin, Gruvbox, Solarized, Tokyo Night, One Dark — plus a clean default. Each with light and dark variants.'
+  },
+  {
+    icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+    title: 'Light & Dark Mode',
+    description: 'Independent dark mode toggle works with every theme. Persists to localStorage with zero flash.'
+  },
+  {
+    icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>',
+    title: 'Full-Text Search',
+    description: 'Pagefind-powered search with Ctrl+K shortcut. Zero-config — just build and it works.'
+  },
+  {
+    icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+    title: 'MDX Content Collections',
+    description: 'Type-safe frontmatter, automatic slug routing, and sidebar generation from your file structure.'
+  },
+];
+---
+
+<BaseLayout title="Home">
+  <Header />
+
+  <!-- Hero -->
+  <section class="py-20 lg:py-32" style="background: linear-gradient(to bottom, color-mix(in srgb, var(--td-accent) 5%, transparent), transparent)">
+    <div class="container text-center">
+      <h1 class="text-4xl lg:text-6xl font-bold mb-6 tracking-tight">
+        Terminal Docs
+      </h1>
+      <p class="text-xl lg:text-2xl text-[var(--td-text-muted)] max-w-3xl mx-auto mb-4">
+        A themeable documentation starter for Astro with terminal color scheme presets.
+      </p>
+      <p class="text-lg text-[var(--td-text-muted)] max-w-2xl mx-auto mb-8">
+        <strong>8 built-in themes</strong>, light &amp; dark mode, full-text search, MDX content collections, and a clean responsive layout.
+      </p>
+
+      <div class="max-w-xl mx-auto mb-8">
+        <InstallCommand />
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/docs/getting-started/" class="btn btn-primary">Get Started</a>
+        <a href="/docs/customization/" class="btn btn-secondary">Customize</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-20">
+    <div class="container">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {features.map(feature => (
+          <div class="text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4" style="background-color: color-mix(in srgb, var(--td-accent) 10%, transparent); color: var(--td-accent)" set:html={feature.icon} />
+            <h3 class="font-semibold text-lg mb-2">{feature.title}</h3>
+            <p class="text-[var(--td-text-muted)] text-sm">{feature.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Theme Preview -->
+  <section class="py-20" style="background-color: var(--td-bg-alt)">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Pick Your Palette</h2>
+        <p class="text-[var(--td-text-muted)] max-w-2xl mx-auto">
+          8 color schemes inspired by popular terminal themes. Switch at any time from the header dropdown — your choice persists across pages.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+        {themes.map(theme => (
+          <button
+            class="theme-preview-btn card p-4 text-center cursor-pointer"
+            data-theme-id={theme.id}
+          >
+            <div class="flex justify-center gap-1 mb-3">
+              {theme.preview.map(color => (
+                <span class="w-6 h-6 rounded-full border border-[var(--td-border)]" style={`background:${color}`} />
+              ))}
+            </div>
+            <span class="text-sm font-medium">{theme.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20">
+    <div class="container">
+      <div class="card max-w-4xl mx-auto text-center p-12">
+        <h2 class="text-2xl font-bold mb-4">Ready to Build?</h2>
+        <p class="text-[var(--td-text-muted)] mb-8 max-w-xl mx-auto">
+          Clone the template, pick a theme, and start writing docs. Ship in minutes.
+        </p>
+        <div class="max-w-xl mx-auto mb-6">
+          <InstallCommand />
+        </div>
+        <p class="text-sm text-[var(--td-text-muted)]">
+          Apache 2.0 licensed. <a href="https://github.com/wyre-technology/astro-terminal-docs" class="text-[var(--td-accent)] hover:underline">View on GitHub</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Theme preview buttons on homepage
+  document.querySelectorAll('.theme-preview-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = (btn as HTMLElement).dataset.themeId;
+      if (id) {
+        document.documentElement.setAttribute('data-theme', id);
+        localStorage.setItem('td-theme', id);
+        // Update header label if present
+        const label = document.getElementById('theme-label');
+        const name = btn.querySelector('span:last-child')?.textContent;
+        if (label && name) label.textContent = name;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,113 @@
+---
+title: Customization
+description: Switch themes, create custom color schemes, and configure your site.
+order: 2
+---
+
+# Customization
+
+Terminal Docs ships with 8 color scheme presets inspired by popular terminal themes. You can switch between them, modify them, or create your own.
+
+## Built-in Themes
+
+| Theme | Style | Accent Color |
+|-------|-------|-------------|
+| **Default** | Clean, modern | Blue |
+| **Nord** | Arctic, cool | Frost blue |
+| **Dracula** | Dark, vibrant | Purple |
+| **Catppuccin** | Pastel, warm | Mauve |
+| **Gruvbox** | Retro, earthy | Yellow |
+| **Solarized** | Precision, balanced | Blue |
+| **Tokyo Night** | Futuristic, smooth | Blue-purple |
+| **One Dark** | Classic, comfortable | Blue |
+
+Each theme has both **light** and **dark** variants. The dark mode toggle works independently — pick any theme and toggle dark mode separately.
+
+## How Themes Work
+
+Themes use CSS custom properties (variables). Each theme file in `src/styles/themes/` defines a set of color tokens:
+
+```css
+:root[data-theme="nord"].dark {
+  --td-bg: #2e3440;
+  --td-bg-alt: #3b4252;
+  --td-bg-code: #242933;
+  --td-text: #eceff4;
+  --td-text-muted: #d8dee9;
+  --td-border: #434c5e;
+  --td-accent: #88c0d0;
+  --td-accent-hover: #8fbcbb;
+  --td-success: #a3be8c;
+  --td-warning: #ebcb8b;
+  --td-error: #bf616a;
+  --td-info: #81a1c1;
+}
+```
+
+## Creating a Custom Theme
+
+1. Copy an existing theme file, e.g., `src/styles/themes/nord.css`
+2. Rename it to your theme name, e.g., `my-theme.css`
+3. Update the selector: `:root[data-theme="my-theme"]`
+4. Change the color values
+5. Import it in `src/styles/global.css`:
+
+```css
+@import "./themes/my-theme.css";
+```
+
+6. Add it to the theme switcher in `src/data/themes.ts`:
+
+```typescript
+{ id: "my-theme", name: "My Theme", preview: ["#bg", "#accent", "#text"] }
+```
+
+## CSS Variable Reference
+
+| Variable | Usage |
+|----------|-------|
+| `--td-bg` | Page background |
+| `--td-bg-alt` | Alternate sections, sidebar |
+| `--td-bg-code` | Code block background |
+| `--td-text` | Primary text color |
+| `--td-text-muted` | Secondary/muted text |
+| `--td-border` | Borders, dividers |
+| `--td-accent` | Links, buttons, active states |
+| `--td-accent-hover` | Accent hover state |
+| `--td-success` | Success indicators |
+| `--td-warning` | Warning indicators |
+| `--td-error` | Error indicators |
+| `--td-info` | Info indicators |
+
+## Using Theme Colors in Tailwind
+
+Theme colors are mapped to Tailwind via `@theme` in `global.css`. Use them with standard utility classes:
+
+```html
+<div class="bg-td-bg text-td-text border-td-border">
+  <span class="text-td-accent">Themed content</span>
+</div>
+```
+
+## Customizing the Site
+
+### Site Name and Metadata
+
+Edit the component files directly:
+
+- **Site name**: `src/components/Header.astro` and `src/components/Footer.astro`
+- **SEO defaults**: `src/components/SEOHead.astro`
+- **GitHub URL**: Update links in Header and Footer
+
+### Navigation
+
+Header navigation links are defined in `src/components/Header.astro`. The sidebar is automatically generated from your content collection structure.
+
+### Fonts
+
+Fonts are loaded in `src/layouts/BaseLayout.astro`. The defaults are:
+
+- **Body**: Inter
+- **Code**: JetBrains Mono
+
+Replace the Google Fonts link to use your preferred typefaces.

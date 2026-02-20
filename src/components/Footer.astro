@@ -1,0 +1,50 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-[var(--td-border)] mt-auto">
+  <div class="container py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <a href="/" class="flex items-center gap-2 font-semibold text-lg mb-4">
+          <svg class="w-7 h-7 text-[var(--td-accent)]" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="6" fill="currentColor" opacity="0.15"/>
+            <text x="5" y="22" font-family="monospace" font-size="16" fill="currentColor">$_</text>
+          </svg>
+          <span>Terminal Docs</span>
+        </a>
+        <p class="text-[var(--td-text-muted)] max-w-md">
+          A themeable documentation starter template for Astro with built-in terminal color scheme presets.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-4">Documentation</h3>
+        <ul class="space-y-2 text-[var(--td-text-muted)]">
+          <li><a href="/docs/getting-started/" class="hover:text-[var(--td-text)]">Getting Started</a></li>
+          <li><a href="/docs/customization/" class="hover:text-[var(--td-text)]">Customization</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-4">Community</h3>
+        <ul class="space-y-2 text-[var(--td-text-muted)]">
+          <li>
+            <a href="https://github.com/wyre-technology/astro-terminal-docs" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--td-text)]">
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/wyre-technology/astro-terminal-docs/issues" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--td-text)]">
+              Report an Issue
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-[var(--td-border)] mt-8 pt-8 text-center text-[var(--td-text-muted)] text-sm">
+      <p>&copy; {currentYear} Built with <a href="https://astro.build" class="text-[var(--td-accent)] hover:underline">Astro</a> + Terminal Docs.</p>
+    </div>
+  </div>
+</footer>

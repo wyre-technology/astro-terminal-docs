@@ -1,0 +1,81 @@
+---
+title: Getting Started
+description: Set up your Terminal Docs site in minutes.
+order: 1
+---
+
+# Getting Started
+
+Terminal Docs is a themeable documentation starter for [Astro](https://astro.build) with 8 built-in terminal color scheme presets.
+
+## Quick Start
+
+Create a new project using the template:
+
+```bash
+npm create astro@latest -- --template wyre-technology/astro-terminal-docs
+```
+
+Then install dependencies and start the dev server:
+
+```bash
+cd my-docs
+npm install
+npm run dev
+```
+
+Your site is now running at `http://localhost:4321`.
+
+## Project Structure
+
+```
+src/
+├── components/      # Reusable UI components
+├── content/docs/    # Your MDX documentation pages
+├── data/            # Theme metadata
+├── layouts/         # Page layouts (Base + Docs)
+├── lib/             # Theme persistence utilities
+├── pages/           # Route pages
+└── styles/
+    ├── global.css   # Base styles + Tailwind
+    └── themes/      # 8 color scheme presets
+```
+
+## Adding Pages
+
+Create `.mdx` files in `src/content/docs/`. Each file needs frontmatter:
+
+```mdx
+---
+title: My Page Title
+description: A brief description for SEO.
+order: 1
+---
+
+# My Page Title
+
+Your markdown content goes here.
+```
+
+Pages are automatically added to the sidebar navigation. The `order` field controls sort order within each section.
+
+## Grouping Pages into Sections
+
+Use subdirectories to create sidebar sections:
+
+```
+src/content/docs/
+├── getting-started.mdx      → "General" section
+├── guides/
+│   ├── deployment.mdx        → "Guides" section
+│   └── advanced-config.mdx   → "Guides" section
+└── reference/
+    ├── components.mdx         → "Reference" section
+    └── api.mdx                → "Reference" section
+```
+
+Directory names become section headers (with automatic title-casing).
+
+## Next Steps
+
+- [Customize your theme](/docs/customization/) — switch color schemes or create your own
