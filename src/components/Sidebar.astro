@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
+const baseUrl = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const docs = await getCollection('docs');
@@ -15,7 +16,7 @@ for (const doc of docs) {
   if (!sections.has(sectionLabel)) sections.set(sectionLabel, []);
   sections.get(sectionLabel)!.push({
     label: doc.data.title,
-    href: `/docs/${doc.id}/`,
+    href: `${baseUrl}docs/${doc.id}/`,
   });
 }
 

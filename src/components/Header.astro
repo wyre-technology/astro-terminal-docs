@@ -1,15 +1,16 @@
 ---
 import ThemeSwitcher from './ThemeSwitcher.astro';
 
+const baseUrl = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/docs/getting-started/', label: 'Docs' },
+  { href: baseUrl, label: 'Home' },
+  { href: `${baseUrl}docs/getting-started/`, label: 'Docs' },
 ];
 
 function isActive(href: string): boolean {
-  if (href === '/') return currentPath === '/';
+  if (href === baseUrl) return currentPath === baseUrl || currentPath === baseUrl.slice(0, -1);
   return currentPath.startsWith(href);
 }
 ---
@@ -17,7 +18,7 @@ function isActive(href: string): boolean {
 <header class="sticky top-0 z-50 backdrop-blur-md border-b border-[var(--td-border)]" style="background-color: color-mix(in srgb, var(--td-bg) 80%, transparent)">
   <div class="container">
     <div class="flex items-center justify-between h-16">
-      <a href="/" class="flex items-center gap-2 font-semibold text-lg">
+      <a href={baseUrl} class="flex items-center gap-2 font-semibold text-lg">
         <svg class="w-7 h-7 text-[var(--td-accent)]" viewBox="0 0 32 32" fill="none">
           <rect width="32" height="32" rx="6" fill="currentColor" opacity="0.15"/>
           <text x="5" y="22" font-family="monospace" font-size="16" fill="currentColor">$_</text>
@@ -88,7 +89,7 @@ function isActive(href: string): boolean {
 </header>
 
 <!-- Search modal -->
-<div id="search-dialog" class="search-dialog" role="dialog" aria-modal="true">
+<div id="search-dialog" class="search-dialog" role="dialog" aria-modal="true" data-base-url={baseUrl}>
   <div id="search-dialog-backdrop" class="absolute inset-0"></div>
   <div class="relative w-full max-w-2xl mx-4 rounded-xl border border-[var(--td-border)] shadow-2xl overflow-hidden max-h-[70vh] flex flex-col" style="background-color: var(--td-bg)">
     <div id="search-container" class="pagefind-ui p-4 overflow-y-auto"></div>
@@ -131,6 +132,7 @@ function isActive(href: string): boolean {
   const searchButton = document.getElementById('search-button');
   const searchDialog = document.getElementById('search-dialog');
   const searchBackdrop = document.getElementById('search-dialog-backdrop');
+  const basePath = searchDialog?.dataset.baseUrl || '/';
   let pagefindLoaded = false;
 
   async function openSearch() {
@@ -141,12 +143,12 @@ function isActive(href: string): boolean {
       pagefindLoaded = true;
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '/pagefind/pagefind-ui.css';
+      link.href = `${basePath}pagefind/pagefind-ui.css`;
       document.head.appendChild(link);
 
       await new Promise<void>((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = '/pagefind/pagefind-ui.js';
+        script.src = `${basePath}pagefind/pagefind-ui.js`;
         script.onload = () => resolve();
         script.onerror = () => reject(new Error('Failed to load Pagefind'));
         document.head.appendChild(script);
