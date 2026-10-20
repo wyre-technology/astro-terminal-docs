@@ -93,6 +93,15 @@ function isActive(href: string): boolean {
   <div id="search-dialog-backdrop" class="absolute inset-0"></div>
   <div class="relative w-full max-w-2xl mx-4 rounded-xl border border-[var(--td-border)] shadow-2xl overflow-hidden max-h-[70vh] flex flex-col" style="background-color: var(--td-bg)">
     <div id="search-container" class="pagefind-ui p-4 overflow-y-auto"></div>
+    <div id="search-error" class="hidden p-6 text-center text-sm text-[var(--td-text-muted)]" role="alert">
+      <p>Search couldn't load. The site may have been updated since you opened this page.</p>
+      <button
+        id="search-reload"
+        class="mt-3 px-3 py-1.5 rounded-lg border border-[var(--td-border)] text-[var(--td-text)] hover:border-[var(--td-text)] transition-colors"
+      >
+        Reload page
+      </button>
+    </div>
   </div>
 </div>
 
@@ -132,30 +141,56 @@ function isActive(href: string): boolean {
   const searchButton = document.getElementById('search-button');
   const searchDialog = document.getElementById('search-dialog');
   const searchBackdrop = document.getElementById('search-dialog-backdrop');
+  const searchContainer = document.getElementById('search-container');
+  const searchError = document.getElementById('search-error');
   const basePath = searchDialog?.dataset.baseUrl || '/';
-  let pagefindLoaded = false;
+  let pagefindReady: Promise<void> | null = null;
+
+  function loadScript(src: string, type?: string) {
+    return new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      if (type) script.type = type;
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadPagefind() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${basePath}pagefind/pagefind-ui.css`;
+    document.head.appendChild(link);
+
+    await loadScript(`${basePath}pagefind/pagefind-ui.js`);
+    // PagefindUI imports the search core lazily and throws on the first keystroke if that
+    // import fails (e.g. a stale page after a redeploy), so make sure it loads first. The
+    // module is cached by URL, so PagefindUI's own import reuses it.
+    await loadScript(`${basePath}pagefind/pagefind.js`, 'module');
+
+    // @ts-ignore
+    if (typeof window.PagefindUI !== 'function') throw new Error('Pagefind UI did not initialize');
+    // @ts-ignore
+    new window.PagefindUI({ element: '#search-container', showSubResults: true, showImages: false });
+  }
+
+  function showSearchError() {
+    searchContainer?.classList.add('hidden');
+    searchError?.classList.remove('hidden');
+  }
 
   async function openSearch() {
     if (searchDialog) searchDialog.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 
-    if (!pagefindLoaded) {
-      pagefindLoaded = true;
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = `${basePath}pagefind/pagefind-ui.css`;
-      document.head.appendChild(link);
-
-      await new Promise<void>((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = `${basePath}pagefind/pagefind-ui.js`;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Failed to load Pagefind'));
-        document.head.appendChild(script);
-      });
-
-      // @ts-ignore
-      new window.PagefindUI({ element: '#search-container', showSubResults: true, showImages: false });
+    pagefindReady ??= loadPagefind();
+    try {
+      await pagefindReady;
+    } catch (error) {
+      console.error('Search failed to load', error);
+      showSearchError();
+      return;
     }
 
     requestAnimationFrame(() => {
@@ -171,6 +206,7 @@ function isActive(href: string): boolean {
 
   searchButton?.addEventListener('click', openSearch);
   searchBackdrop?.addEventListener('click', closeSearch);
+  document.getElementById('search-reload')?.addEventListener('click', () => window.location.reload());
 
   document.addEventListener('keydown', (e) => {
     const isOpen = searchDialog?.style.display === 'flex';
